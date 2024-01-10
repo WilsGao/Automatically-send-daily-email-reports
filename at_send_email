@@ -1,0 +1,43 @@
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import datetime
+
+def send_email(subject, body, to_email):
+    # 發件人郵箱信息
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587  # Gmail SMTP 端口
+    sender_email = 'your_email@gmail.com'  # 發件人郵箱地址
+    sender_password = 'your_password'  # 發件人郵箱密碼或授權碼
+
+    # 創建郵件對象
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+
+    # 郵件正文
+    msg.attach(MIMEText(body, 'plain'))
+
+    # 連接到 SMTP 伺服器並發送郵件
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print("郵件發送成功！")
+    except Exception as e:
+        print(f"郵件發送失敗：{e}")
+
+def generate_daily_report():
+    # 在這裡生成每日報告的內容，可以是從數據庫、日誌文件等獲取的數據
+    # 示例：獲取當前日期作為報告內容
+    today = datetime.date.today()
+    report = f"今天是 {today}"
+
+    return report
+
+# 生成每日報告並發送郵件
+daily_report = generate_daily_report()
+send_email("每日報告", daily_report, "recipient_email@example.com")  # 接收郵件的郵箱地址
